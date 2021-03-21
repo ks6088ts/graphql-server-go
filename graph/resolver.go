@@ -60,3 +60,26 @@ func (r *Resolver) transferStation(ctx context.Context, obj *model.Station) ([]*
 
 	return resp, nil
 }
+
+// 駅名検索部分
+func (r *Resolver) getStationByName(ctx context.Context, stationName *string) ([]*model.Station, error) {
+	stations, err := models.StationByNamesByStationName(r.Db, *stationName)
+	if err != nil {
+		return nil, err
+	}
+	if len(stations) == 0 {
+		return nil, errors.New("not found")
+	}
+
+	resp := make([]*model.Station, 0, len(stations))
+	for _, v := range stations {
+		resp = append(resp, &model.Station{
+			StationCd:   v.StationCd,
+			StationName: v.StationName,
+			LineName:    &v.LineName,
+			Address:     &v.Address,
+		})
+	}
+
+	return resp, nil
+}

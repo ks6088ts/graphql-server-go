@@ -103,6 +103,15 @@ from station s
          left outer join line lt on t.line_cd = lt.line_cd
 where s.station_cd = %%stationCD int%%
 ENDSQL
+
+# 駅名検索
+xo 'pgsql://user:password@localhost:5432/db?sslmode=disable' -N -M -B -T StationByName -o models/ << ENDSQL
+select l.line_cd, l.line_name, s.station_cd, station_g_cd, s.station_name, s.address
+from station s
+         inner join line l on s.line_cd = l.line_cd
+where s.station_name = %%stationName string%%
+  and s.e_status = 0
+ENDSQL
 ```
 
 ## GraphQL playground
@@ -114,12 +123,15 @@ fragment stationF on Station {
   stationName
 }
 
-query stationByCD {
+query stations {
   stationByCD(stationCD: 1130201) {
     ...stationF
     transferStation {
       ...stationF
     }
+  }
+  stationByName(stationName: "大崎") {
+    ...stationF
   }
 }
 ---
@@ -146,7 +158,29 @@ query stationByCD {
           "stationName": "大崎"
         }
       ]
-    }
+    },
+    "stationByName": [
+      {
+        "lineName": "JR山手線",
+        "stationCD": 1130201,
+        "stationName": "大崎"
+      },
+      {
+        "lineName": "JR埼京線",
+        "stationCD": 1132101,
+        "stationName": "大崎"
+      },
+      {
+        "lineName": "JR湘南新宿ライン",
+        "stationCD": 1133307,
+        "stationName": "大崎"
+      },
+      {
+        "lineName": "りんかい線",
+        "stationCD": 9933708,
+        "stationName": "大崎"
+      }
+    ]
   }
 }
 ```
