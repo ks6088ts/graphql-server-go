@@ -6,6 +6,7 @@
 # リポジトリの初期セットアップ
 make clean
 make init
+make install
 ```
 
 ## PostgreSQL
@@ -19,4 +20,11 @@ docker-compose up --build -d postgres
 
 # table(company, station_join, line, station) の確認
 docker-compose exec postgres psql -U user -c 'select * from company limit 3' db
+```
+
+## gqlgen
+
+```bash
+# add `graph/schema.graphqls`
+go mod init && gqlgen init
 ```
