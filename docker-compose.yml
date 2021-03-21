@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  postgres:
+    build:
+      context: .
+      dockerfile: ./docker/postgres/Dockerfile
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_INITDB_ARGS=${POSTGRES_INITDB_ARGS}
+    ports:
+      - ${POSTGRES_PORT}:5432
+    volumes:
+      - pg-data-eki:/var/lib/pgdata
+    networks:
+      - shared-network
+volumes:
+  pg-data-eki:
+    driver: local
+networks:
+  shared-network:
+    external: true
