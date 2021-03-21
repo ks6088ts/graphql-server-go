@@ -22,6 +22,10 @@ clean: ## clean up repository
 db: ## start db service
 	docker-compose up --build -d postgres
 
+.PHONY: generate
+generate: ## generate codes
+	gqlgen generate
+
 .PHONY: install
 install: ## install
 	go get -u \

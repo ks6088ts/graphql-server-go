@@ -19,6 +19,14 @@ func (r *queryResolver) StationByCd(ctx context.Context, stationCd *int) (*model
 	return r.getStationByCD(ctx, stationCd)
 }
 
+func (r *queryResolver) ProductByName(ctx context.Context, productName *string) ([]*model.Product, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *queryResolver) ProductByID(ctx context.Context, productID *int) (*model.Product, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
 func (r *stationResolver) BeforeStation(ctx context.Context, obj *model.Station) (*model.Station, error) {
 	panic(fmt.Errorf("not implemented"))
 }
