@@ -19,7 +19,23 @@ func (r *queryResolver) StationByCd(ctx context.Context, stationCd *int) (*model
 	panic(fmt.Errorf("not implemented"))
 }
 
+func (r *stationResolver) BeforeStation(ctx context.Context, obj *model.Station) (*model.Station, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *stationResolver) AfterStation(ctx context.Context, obj *model.Station) (*model.Station, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
+func (r *stationResolver) TransferStation(ctx context.Context, obj *model.Station) ([]*model.Station, error) {
+	panic(fmt.Errorf("not implemented"))
+}
+
 // Query returns generated.QueryResolver implementation.
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
+// Station returns generated.StationResolver implementation.
+func (r *Resolver) Station() generated.StationResolver { return &stationResolver{r} }
+
 type queryResolver struct{ *Resolver }
+type stationResolver struct{ *Resolver }

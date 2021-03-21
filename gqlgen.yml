@@ -54,3 +54,11 @@ models:
       - github.com/99designs/gqlgen/graphql.Int
       - github.com/99designs/gqlgen/graphql.Int64
       - github.com/99designs/gqlgen/graphql.Int32
+  Station:
+    fields:
+      beforeStation:
+        resolver: true
+      afterStation:
+        resolver: true
+      transferStation:
+        resolver:  true

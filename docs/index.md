@@ -27,6 +27,9 @@ docker-compose exec postgres psql -U user -c 'select * from company limit 3' db
 ```bash
 # add `graph/schema.graphqls`
 go mod init && gqlgen init
+
+# generate codes after updating schema
+gqlgen generate
 ```
 
 ## xo

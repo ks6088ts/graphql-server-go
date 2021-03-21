@@ -36,6 +36,7 @@ type Config struct {
 
 type ResolverRoot interface {
 	Query() QueryResolver
+	Station() StationResolver
 }
 
 type DirectiveRoot struct {
@@ -61,6 +62,11 @@ type ComplexityRoot struct {
 type QueryResolver interface {
 	StationByName(ctx context.Context, stationName *string) ([]*model.Station, error)
 	StationByCd(ctx context.Context, stationCd *int) (*model.Station, error)
+}
+type StationResolver interface {
+	BeforeStation(ctx context.Context, obj *model.Station) (*model.Station, error)
+	AfterStation(ctx context.Context, obj *model.Station) (*model.Station, error)
+	TransferStation(ctx context.Context, obj *model.Station) ([]*model.Station, error)
 }
 
 type executableSchema struct {
@@ -603,14 +609,14 @@ func (ec *executionContext) _Station_beforeStation(ctx context.Context, field gr
 		Object:     "Station",
 		Field:      field,
 		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.BeforeStation, nil
+		return ec.resolvers.Station().BeforeStation(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -635,14 +641,14 @@ func (ec *executionContext) _Station_afterStation(ctx context.Context, field gra
 		Object:     "Station",
 		Field:      field,
 		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.AfterStation, nil
+		return ec.resolvers.Station().AfterStation(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -667,14 +673,14 @@ func (ec *executionContext) _Station_transferStation(ctx context.Context, field 
 		Object:     "Station",
 		Field:      field,
 		Args:       nil,
-		IsMethod:   false,
-		IsResolver: false,
+		IsMethod:   true,
+		IsResolver: true,
 	}
 
 	ctx = graphql.WithFieldContext(ctx, fc)
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.TransferStation, nil
+		return ec.resolvers.Station().TransferStation(rctx, obj)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1852,23 +1858,50 @@ func (ec *executionContext) _Station(ctx context.Context, sel ast.SelectionSet, 
 		case "stationCD":
 			out.Values[i] = ec._Station_stationCD(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "lineName":
 			out.Values[i] = ec._Station_lineName(ctx, field, obj)
 		case "stationName":
 			out.Values[i] = ec._Station_stationName(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
-				invalids++
+				atomic.AddUint32(&invalids, 1)
 			}
 		case "address":
 			out.Values[i] = ec._Station_address(ctx, field, obj)
 		case "beforeStation":
-			out.Values[i] = ec._Station_beforeStation(ctx, field, obj)
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Station_beforeStation(ctx, field, obj)
+				return res
+			})
 		case "afterStation":
-			out.Values[i] = ec._Station_afterStation(ctx, field, obj)
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Station_afterStation(ctx, field, obj)
+				return res
+			})
 		case "transferStation":
-			out.Values[i] = ec._Station_transferStation(ctx, field, obj)
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Station_transferStation(ctx, field, obj)
+				return res
+			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
