@@ -35,3 +35,28 @@ func (r *Resolver) getStationByCD(ctx context.Context, stationCd *int) (*model.S
 		Address:     &first.Address,
 	}, nil
 }
+
+// 乗り換え駅取得部分
+func (r *Resolver) transferStation(ctx context.Context, obj *model.Station) ([]*model.Station, error) {
+	stationCd := obj.StationCd
+
+	records, err := models.TransfersByStationCD(r.Db, stationCd)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := make([]*model.Station, 0, len(records))
+	for _, v := range records {
+		if v.TransferStationName == "" {
+			continue
+		}
+		resp = append(resp, &model.Station{
+			StationCd:   v.TransferStationCd,
+			StationName: v.TransferStationName,
+			LineName:    &v.TransferLineName,
+			Address:     &v.TransferAddress,
+		})
+	}
+
+	return resp, nil
+}

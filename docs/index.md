@@ -108,27 +108,53 @@ ENDSQL
 ## GraphQL playground
 
 ```
-query stationByCD {
-  stationByCD(stationCD: 1130201){
-    stationCD
+query nextStation {
+  stationByCD(stationCD: 1130201) {
     lineName
+    stationCD
     stationName
-    address
-    # beforeStation
-    # afterStation
-    # transferStation
+    transferStation {
+      lineName
+      stationCD
+      stationName
+    }
+    # beforeStation {
+    #   lineName
+    #   stationCD
+    #   stationName
+    # }
+    # afterStation {
+    #   lineName
+    #   stationCD
+    #   stationName
+    # }
   }
 }
-
 ---
 
 {
   "data": {
     "stationByCD": {
-      "stationCD": 1130201,
       "lineName": "JR山手線",
+      "stationCD": 1130201,
       "stationName": "大崎",
-      "address": "東京都品川区大崎一丁目21-4"
+      "transferStation": [
+        {
+          "lineName": "JR埼京線",
+          "stationCD": 1132101,
+          "stationName": "大崎"
+        },
+        {
+          "lineName": "JR湘南新宿ライン",
+          "stationCD": 1133307,
+          "stationName": "大崎"
+        },
+        {
+          "lineName": "りんかい線",
+          "stationCD": 9933708,
+          "stationName": "大崎"
+        }
+      ]
     }
   }
 }
