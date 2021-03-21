@@ -8,7 +8,19 @@ type Station {
   transferStation: [Station]
 }
 
+type Product {
+  productId: Int!
+  companyCd: Int!
+  inventoryCd: Int!
+  priceJpy: Int!
+  productName: String!
+  description: String!
+}
+
 type Query {
   stationByName(stationName: String): [Station]
   stationByCD(stationCD: Int): Station!
+
+  productByName(productName: String): [Product]
+  productById(productId: Int): Product!
 }
