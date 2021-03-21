@@ -108,30 +108,21 @@ ENDSQL
 ## GraphQL playground
 
 ```
-query nextStation {
+fragment stationF on Station {
+  lineName
+  stationCD
+  stationName
+}
+
+query stationByCD {
   stationByCD(stationCD: 1130201) {
-    lineName
-    stationCD
-    stationName
+    ...stationF
     transferStation {
-      lineName
-      stationCD
-      stationName
+      ...stationF
     }
-    # beforeStation {
-    #   lineName
-    #   stationCD
-    #   stationName
-    # }
-    # afterStation {
-    #   lineName
-    #   stationCD
-    #   stationName
-    # }
   }
 }
 ---
-
 {
   "data": {
     "stationByCD": {
