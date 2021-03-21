@@ -112,6 +112,13 @@ from station s
 where s.station_name = %%stationName string%%
   and s.e_status = 0
 ENDSQL
+
+# 製品ID検索
+xo 'pgsql://user:password@localhost:5432/db?sslmode=disable' -N -M -B -T ProductById -o models/ << ENDSQL
+select p.product_id,p.company_cd,p.inventory_cd,p.price_jpy,p.product_name,p.description
+from product p
+where p.product_id = %%productId int%%
+ENDSQL
 ```
 
 ## GraphQL playground
