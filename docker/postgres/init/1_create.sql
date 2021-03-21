@@ -61,3 +61,17 @@ create table station
     PRIMARY KEY (station_cd)
 );
 comment on table station is 'station.csv';
+
+-- EXAMPLE
+
+create table product
+(
+    product_id integer not null, -- primary key
+    company_cd integer not null, -- 0: sony, 1: canon, 2: panasonic
+    inventory_cd integer not null, -- 0: 在庫有り, 1: 在庫なし, 2: 商談中
+    price_jpy integer not null,
+    product_name varchar not null,
+    description varchar not null,
+    PRIMARY KEY (product_id)
+);
+comment on table product is 'product.csv';
