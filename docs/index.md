@@ -123,7 +123,8 @@ ENDSQL
 
 ## GraphQL playground
 
-```
+```bash
+# Station
 fragment stationF on Station {
   lineName
   stationCD
@@ -188,6 +189,31 @@ query stations {
         "stationName": "大崎"
       }
     ]
+  }
+}
+
+# Product
+query productById {
+  productById(productId: 0){
+    productId
+    companyCd
+    inventoryCd
+    priceJpy
+    productName
+    description
+  }
+}
+---
+{
+  "data": {
+    "productById": {
+      "productId": 0,
+      "companyCd": 0,
+      "inventoryCd": 0,
+      "priceJpy": 10000,
+      "productName": "product-0",
+      "description": "Hello world"
+    }
   }
 }
 ```
