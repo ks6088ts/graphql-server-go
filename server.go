@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"log"
 	"net/http"
 	"os"
@@ -9,6 +10,8 @@ import (
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/ks6088ts/graphql-server-go/graph"
 	"github.com/ks6088ts/graphql-server-go/graph/generated"
+
+	_ "github.com/lib/pq"
 )
 
 const defaultPort = "8080"
@@ -19,7 +22,15 @@ func main() {
 		port = defaultPort
 	}
 
-	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
+	db, err := sql.Open("postgres", "host=localhost port=5432 user=user password=password dbname=db sslmode=disable")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{
+		Db: db,
+	}}))
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	http.Handle("/query", srv)

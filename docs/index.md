@@ -104,3 +104,32 @@ from station s
 where s.station_cd = %%stationCD int%%
 ENDSQL
 ```
+
+## GraphQL playground
+
+```
+query stationByCD {
+  stationByCD(stationCD: 1130201){
+    stationCD
+    lineName
+    stationName
+    address
+    # beforeStation
+    # afterStation
+    # transferStation
+  }
+}
+
+---
+
+{
+  "data": {
+    "stationByCD": {
+      "stationCD": 1130201,
+      "lineName": "JR山手線",
+      "stationName": "大崎",
+      "address": "東京都品川区大崎一丁目21-4"
+    }
+  }
+}
+```

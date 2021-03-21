@@ -16,7 +16,7 @@ func (r *queryResolver) StationByName(ctx context.Context, stationName *string) 
 }
 
 func (r *queryResolver) StationByCd(ctx context.Context, stationCd *int) (*model.Station, error) {
-	panic(fmt.Errorf("not implemented"))
+	return r.getStationByCD(ctx, stationCd)
 }
 
 func (r *stationResolver) BeforeStation(ctx context.Context, obj *model.Station) (*model.Station, error) {
