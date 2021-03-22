@@ -2,6 +2,15 @@
 
 package model
 
+type Product struct {
+	ProductID   int    `json:"productId"`
+	CompanyCd   int    `json:"companyCd"`
+	InventoryCd int    `json:"inventoryCd"`
+	PriceJpy    int    `json:"priceJpy"`
+	ProductName string `json:"productName"`
+	Description string `json:"description"`
+}
+
 type Station struct {
 	StationCd       int        `json:"stationCD"`
 	LineName        *string    `json:"lineName"`

@@ -9,3 +9,8 @@ copy line(line_cd,company_cd,line_name,line_name_k,line_name_h,line_color_c,line
 
 copy station(station_cd,station_g_cd,station_name,station_name_k,station_name_r,line_cd,pref_cd,post,address,lon,lat,open_ymd,close_ymd,e_status,e_sort)
   from '/docker-entrypoint-initdb.d/station.csv' with csv header;
+
+-- EXAMPLE
+
+copy product(product_id,company_cd,inventory_cd,price_jpy,product_name,description)
+  from '/docker-entrypoint-initdb.d/product.csv' with csv header;
