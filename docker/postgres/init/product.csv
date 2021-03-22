@@ -2,3 +2,6 @@ product_id,company_cd,inventory_cd,price_jpy,product_name,description
 0,0,0,10000,product-0,Hello world
 1,1,1,20000,product-1,はろーわーるど
 2,2,2,30000,product-2,안녕하세요
+3,0,0,40000,product-3,Bonjour le monde
+4,1,1,50000,product-4,Hallo Welt
+5,2,2,60000,product-5,Hola Mundo

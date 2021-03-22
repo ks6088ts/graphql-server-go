@@ -1,5 +1,6 @@
 DOCKER_VOLUME_NAME ?= graphql-server-go
 DOCKER_NETWORK_NAME ?= graphql-server-go
+DB_OPTION ?= "--build"
 
 # https://marmelab.com/blog/2016/02/29/auto-documented-makefile.html
 .PHONY: help
@@ -19,8 +20,8 @@ clean: ## clean up repository
 	docker network rm $(DOCKER_NETWORK_NAME)
 
 .PHONY: db
-db: ## start db service
-	docker-compose up --build -d postgres
+db: ## start db service(Usage: make db DB_OPTION="--build -d")
+	docker-compose up $(DB_OPTION) postgres
 
 .PHONY: generate
 generate: ## generate codes

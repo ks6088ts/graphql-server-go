@@ -23,4 +23,5 @@ type Query {
 
   productByName(productName: String): [Product]
   productById(productId: Int): Product!
+  productByCompanyCd(companyCd: Int): [Product]
 }

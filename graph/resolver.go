@@ -104,3 +104,28 @@ func (r *Resolver) getProductById(ctx context.Context, productID *int) (*model.P
 		Description: first.Description,
 	}, nil
 }
+
+// 製品 CompanyCd 検索部分
+func (r *Resolver) getProductByCompanyCd(ctx context.Context, companyCd *int) ([]*model.Product, error) {
+	products, err := models.ProductByCompanyCdsByCompanyCd(r.Db, *companyCd)
+	if err != nil {
+		return nil, err
+	}
+	if len(products) == 0 {
+		return nil, errors.New("not found")
+	}
+
+	resp := make([]*model.Product, 0, len(products))
+	for _, v := range products {
+		resp = append(resp, &model.Product{
+			ProductID:   v.ProductID,
+			CompanyCd:   v.CompanyCd,
+			InventoryCd: v.InventoryCd,
+			PriceJpy:    v.PriceJpy,
+			ProductName: v.ProductName,
+			Description: v.Description,
+		})
+	}
+
+	return resp, nil
+}

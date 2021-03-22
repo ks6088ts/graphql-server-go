@@ -9,6 +9,23 @@ make init
 make install
 ```
 
+## 機能追加作業フロー
+
+**DB 更新**
+
+1. `docker/postgres/init` に csv ファイルを配置する
+2. `docker/postgres/init` の sql ファイルにテーブル作成コードを追加する
+3. `make db DB_OPTION="--build"` で DB サーバを起動する
+4. `docker-compose exec postgres psql -U user -c 'select * from company limit 3' db` でデータが格納されているか動作確認する
+
+**schema 更新**
+
+1. `graph/schema.graphqls` を更新する
+2. `make generate` で自動生成コードを更新する
+3. `xo` コマンドでクエリの自動生成コードを生成する
+4. resolver (データマッピングのグルーコード)を実装する
+5. GraphQL Playground で動作確認する
+
 ## PostgreSQL
 
 [駅データ.jp](https://ekidata.jp/dl/?p=1) から駅データをダウンロードし DB サーバを構築する。  
@@ -119,6 +136,13 @@ select p.product_id,p.company_cd,p.inventory_cd,p.price_jpy,p.product_name,p.des
 from product p
 where p.product_id = %%productId int%%
 ENDSQL
+
+# 製品 CompanyCd 検索
+xo 'pgsql://user:password@localhost:5432/db?sslmode=disable' -N -M -B -T ProductByCompanyCd -o models/ << ENDSQL
+select p.product_id,p.company_cd,p.inventory_cd,p.price_jpy,p.product_name,p.description
+from product p
+where p.company_cd = %%companyCd int%%
+ENDSQL
 ```
 
 ## GraphQL playground
@@ -193,14 +217,21 @@ query stations {
 }
 
 # Product
-query productById {
+fragment productF on Product {
+  productId
+  companyCd
+  inventoryCd
+  priceJpy
+  productName
+  description
+}
+
+query products {
   productById(productId: 0){
-    productId
-    companyCd
-    inventoryCd
-    priceJpy
-    productName
-    description
+    ...productF
+  }
+  productByCompanyCd(companyCd: 0) {
+    ...productF
   }
 }
 ---
@@ -213,7 +244,25 @@ query productById {
       "priceJpy": 10000,
       "productName": "product-0",
       "description": "Hello world"
-    }
+    },
+    "productByCompanyCd": [
+      {
+        "productId": 0,
+        "companyCd": 0,
+        "inventoryCd": 0,
+        "priceJpy": 10000,
+        "productName": "product-0",
+        "description": "Hello world"
+      },
+      {
+        "productId": 3,
+        "companyCd": 0,
+        "inventoryCd": 0,
+        "priceJpy": 40000,
+        "productName": "product-3",
+        "description": "Bonjour le monde"
+      }
+    ]
   }
 }
 ```

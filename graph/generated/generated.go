@@ -53,10 +53,11 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		ProductByID   func(childComplexity int, productID *int) int
-		ProductByName func(childComplexity int, productName *string) int
-		StationByCd   func(childComplexity int, stationCd *int) int
-		StationByName func(childComplexity int, stationName *string) int
+		ProductByCompanyCd func(childComplexity int, companyCd *int) int
+		ProductByID        func(childComplexity int, productID *int) int
+		ProductByName      func(childComplexity int, productName *string) int
+		StationByCd        func(childComplexity int, stationCd *int) int
+		StationByName      func(childComplexity int, stationName *string) int
 	}
 
 	Station struct {
@@ -75,6 +76,7 @@ type QueryResolver interface {
 	StationByCd(ctx context.Context, stationCd *int) (*model.Station, error)
 	ProductByName(ctx context.Context, productName *string) ([]*model.Product, error)
 	ProductByID(ctx context.Context, productID *int) (*model.Product, error)
+	ProductByCompanyCd(ctx context.Context, companyCd *int) ([]*model.Product, error)
 }
 type StationResolver interface {
 	BeforeStation(ctx context.Context, obj *model.Station) (*model.Station, error)
@@ -138,6 +140,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Product.ProductName(childComplexity), true
+
+	case "Query.productByCompanyCd":
+		if e.complexity.Query.ProductByCompanyCd == nil {
+			break
+		}
+
+		args, err := ec.field_Query_productByCompanyCd_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ProductByCompanyCd(childComplexity, args["companyCd"].(*int)), true
 
 	case "Query.productById":
 		if e.complexity.Query.ProductByID == nil {
@@ -311,6 +325,7 @@ type Query {
 
   productByName(productName: String): [Product]
   productById(productId: Int): Product!
+  productByCompanyCd(companyCd: Int): [Product]
 }
 `, BuiltIn: false},
 }
@@ -332,6 +347,21 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 		}
 	}
 	args["name"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_productByCompanyCd_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 *int
+	if tmp, ok := rawArgs["companyCd"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("companyCd"))
+		arg0, err = ec.unmarshalOInt2ᚖint(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["companyCd"] = arg0
 	return args, nil
 }
 
@@ -803,6 +833,45 @@ func (ec *executionContext) _Query_productById(ctx context.Context, field graphq
 	res := resTmp.(*model.Product)
 	fc.Result = res
 	return ec.marshalNProduct2ᚖgithubᚗcomᚋks6088tsᚋgraphqlᚑserverᚑgoᚋgraphᚋmodelᚐProduct(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Query_productByCompanyCd(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	fc := &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		Args:       nil,
+		IsMethod:   true,
+		IsResolver: true,
+	}
+
+	ctx = graphql.WithFieldContext(ctx, fc)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Query_productByCompanyCd_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	fc.Args = args
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().ProductByCompanyCd(rctx, args["companyCd"].(*int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.Product)
+	fc.Result = res
+	return ec.marshalOProduct2ᚕᚖgithubᚗcomᚋks6088tsᚋgraphqlᚑserverᚑgoᚋgraphᚋmodelᚐProduct(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -2316,6 +2385,17 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				if res == graphql.Null {
 					atomic.AddUint32(&invalids, 1)
 				}
+				return res
+			})
+		case "productByCompanyCd":
+			field := field
+			out.Concurrently(i, func() (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_productByCompanyCd(ctx, field)
 				return res
 			})
 		case "__type":
