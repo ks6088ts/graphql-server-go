@@ -13,6 +13,7 @@ import (
 //
 // It serves as dependency injection for your app, add any dependencies you require here.
 
+// Resolver ...
 type Resolver struct {
 	Db *sql.DB
 }
@@ -85,7 +86,8 @@ func (r *Resolver) getStationByName(ctx context.Context, stationName *string) ([
 }
 
 // 製品ID検索部分
-func (r *Resolver) getProductById(ctx context.Context, productID *int) (*model.Product, error) {
+// getProductById ...
+func (r *Resolver) getProductByID(ctx context.Context, productID *int) (*model.Product, error) {
 	products, err := models.ProductByIdsByProductId(r.Db, *productID)
 	if err != nil {
 		return nil, err

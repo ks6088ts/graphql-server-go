@@ -24,7 +24,7 @@ func (r *queryResolver) ProductByName(ctx context.Context, productName *string) 
 }
 
 func (r *queryResolver) ProductByID(ctx context.Context, productID *int) (*model.Product, error) {
-	return r.getProductById(ctx, productID)
+	return r.getProductByID(ctx, productID)
 }
 
 func (r *queryResolver) ProductByCompanyCd(ctx context.Context, companyCd *int) ([]*model.Product, error) {
