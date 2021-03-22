@@ -16,6 +16,11 @@ import (
 
 const defaultPort = "8080"
 
+var (
+	version  string
+	revision string
+)
+
 func main() {
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -35,6 +40,7 @@ func main() {
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	http.Handle("/query", srv)
 
+	log.Printf("version=%v, revision=%v", version, revision)
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
