@@ -28,7 +28,7 @@ make install
 
 ## PostgreSQL
 
-[駅データ.jp](https://ekidata.jp/dl/?p=1) から駅データをダウンロードし DB サーバを構築する。  
+[駅データ.jp](https://ekidata.jp/dl/?p=1) から駅データをダウンロードし DB サーバを構築する。
 取得した csv ファイルは `docker/postgres/init/{company, join, line, station}.csv` に配置する。
 
 ```bash
@@ -47,6 +47,9 @@ go mod init && gqlgen init
 
 # generate codes after updating schema
 gqlgen generate
+
+# CORS 対応
+# https://gqlgen.com/recipes/cors/
 ```
 
 ## xo
